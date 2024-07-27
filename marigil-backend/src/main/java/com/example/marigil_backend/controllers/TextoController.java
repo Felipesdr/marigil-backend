@@ -3,6 +3,7 @@ package com.example.marigil_backend.controllers;
 import com.example.marigil_backend.domain.texto.Texto;
 import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
 import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
+import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import com.example.marigil_backend.services.TextoService;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/textos")
@@ -21,6 +23,11 @@ public class TextoController {
 
     @Autowired
     TextoService service;
+
+    @GetMapping("paginaInicial")
+    public ResponseEntity<List<TextoMostrarParcialDTO>> pegarSeisPrimeirosTextos(){
+        return ResponseEntity.ok(service.pegarSeisPrimeirosTextos());
+    }
 
     @PostMapping(path = "adicionar", consumes = "multipart/form-data")
     @Transactional

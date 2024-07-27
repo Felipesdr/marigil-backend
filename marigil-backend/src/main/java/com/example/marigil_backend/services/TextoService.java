@@ -3,17 +3,22 @@ package com.example.marigil_backend.services;
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.marigil_backend.domain.texto.Texto;
 import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
+import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
+import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
+import com.example.marigil_backend.repositorys.TextoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TextoService {
@@ -24,6 +29,15 @@ public class TextoService {
     @Value("${aws.bucket.name}")
     private String bucketName;
 
+    @Autowired
+    private TextoRepository repository;
+
+    public List<TextoMostrarParcialDTO> pegarSeisPrimeirosTextos(){
+        List<Texto> seisPrimeirosTextos = repository.pegarSeisPrimeirosTextos();
+        return seisPrimeirosTextos.stream().map(TextoMostrarParcialDTO::new).toList();
+
+    }
+
     public Texto cadastrarTexto(TextoCadastrarDTO  data){
 
         String imgUrl = null;
@@ -32,7 +46,7 @@ public class TextoService {
             imgUrl = this.uploadImage(data.imagem());
         }
 
-        return new Texto(data, imgUrl);
+        return repository.save(new Texto(data, imgUrl));
     }
 
     private String uploadImage(MultipartFile multipartFile) {
