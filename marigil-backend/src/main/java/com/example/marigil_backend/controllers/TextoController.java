@@ -15,7 +15,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/textos")
@@ -41,12 +43,13 @@ public class TextoController {
                                                             @RequestParam("dataPostagem") LocalDate dataPostagem,
                                                             @RequestParam("conteudo") String conteudo,
                                                             @RequestParam("file") MultipartFile imagem,
+                                                            @RequestParam("idsCategoria[]") List<Long> idsCategoria,
                                                             UriComponentsBuilder uriBuilder){
-       TextoCadastrarDTO dto = new TextoCadastrarDTO(titulo, subtitulo, dataPostagem, conteudo, imagem);
+       TextoCadastrarDTO dto = new TextoCadastrarDTO(titulo, subtitulo, dataPostagem, conteudo, imagem, new HashSet<>(idsCategoria));
        Texto novoTexto = service.cadastrarTexto(dto);
        Long idNovoTexto = novoTexto.getIdTexto();
 
-       URI uri = uriBuilder.path("textos/adicionar/{id}").buildAndExpand(idNovoTexto).toUri();
+       URI uri = uriBuilder.path("/api/textos/adicionar/{id}").buildAndExpand(idNovoTexto).toUri();
 
        return ResponseEntity.created(uri).body(new TextoDetalhadoDTO(novoTexto));
     }

@@ -1,8 +1,12 @@
 package com.example.marigil_backend.domain.texto;
 
-import java.time.LocalDate;
+import com.example.marigil_backend.domain.categoria.CategoriaDetalhadoDTO;
 
-public record TextoDetalhadoDTO(Long idTexto, String titulo, String subtitulo, String imagem, LocalDate dataPostagem, String conteudo) {
+import java.time.LocalDate;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public record TextoDetalhadoDTO(Long idTexto, String titulo, String subtitulo, String imagem, LocalDate dataPostagem, String conteudo, Set<CategoriaDetalhadoDTO> categorias) {
 
     public TextoDetalhadoDTO(Texto texto){
         this(
@@ -11,7 +15,8 @@ public record TextoDetalhadoDTO(Long idTexto, String titulo, String subtitulo, S
                 texto.getSubTitulo(),
                 texto.getImgUrl(),
                 texto.getDataPostagem(),
-                texto.getConteudo()
+                texto.getConteudo(),
+                texto.getCategorias().stream().map(c-> new CategoriaDetalhadoDTO(c.getIdCategoria(), c.getNome())).collect(Collectors.toSet())
         );
     }
 }

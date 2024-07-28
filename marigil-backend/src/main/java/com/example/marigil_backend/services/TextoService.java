@@ -1,10 +1,11 @@
 package com.example.marigil_backend.services;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.example.marigil_backend.domain.categoria.Categoria;
 import com.example.marigil_backend.domain.texto.Texto;
 import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
-import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
 import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
+import com.example.marigil_backend.repositorys.CategoriaRepository;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,29 +31,33 @@ public class TextoService {
     private String bucketName;
 
     @Autowired
-    private TextoRepository repository;
+    private TextoRepository textoRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     public List<TextoMostrarParcialDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){
         Pageable pageable = PageRequest.of(pagina, tamanho);
-        Page<Texto> paginaDeTextos = repository.findAll(pageable);
+        Page<Texto> paginaDeTextos = textoRepository.findAll(pageable);
         return paginaDeTextos.stream().map(TextoMostrarParcialDTO::new).toList();
     }
 
     public List<TextoMostrarParcialDTO> pegarSeisPrimeirosTextos(){
-        List<Texto> seisPrimeirosTextos = repository.pegarSeisPrimeirosTextos();
+        List<Texto> seisPrimeirosTextos = textoRepository.pegarSeisPrimeirosTextos();
         return seisPrimeirosTextos.stream().map(TextoMostrarParcialDTO::new).toList();
 
     }
 
-    public Texto cadastrarTexto(TextoCadastrarDTO  data){
+    public Texto cadastrarTexto(TextoCadastrarDTO  dto){
 
         String imgUrl = null;
-
-        if(data.imagem() !=  null){
-            imgUrl = this.uploadImage(data.imagem());
+        if(dto.imagem() !=  null){
+            imgUrl = this.uploadImage(dto.imagem());
         }
 
-        return repository.save(new Texto(data, imgUrl));
+        Texto novoTexto = new Texto(dto, pegarCategoriasDeUmTexto(dto), imgUrl);
+
+        return textoRepository.save(novoTexto);
     }
 
     private String uploadImage(MultipartFile multipartFile) {
@@ -80,5 +82,12 @@ public class TextoService {
         fos.write(multipartFile.getBytes());
         fos.close();
         return arquivoCOnvertido;
+    }
+
+    private Set<Categoria> pegarCategoriasDeUmTexto(TextoCadastrarDTO dto){
+        return dto.idsCategoria()
+                .stream()
+                .map(idCategoria-> categoriaRepository.findById(idCategoria).orElse(null))
+                .collect(Collectors.toSet());
     }
 }

@@ -29,23 +29,23 @@ public class Texto {
     public Texto() {
     }
 
-    public Texto(Long idTexto, String titulo, String subTitulo, String imgUrl, LocalDate dataPostagem, String conteudo) {
+    public Texto(Long idTexto, String titulo, String subTitulo, String imgUrl, LocalDate dataPostagem, String conteudo, Set<Categoria> categorias) {
         this.idTexto = idTexto;
         this.titulo = titulo;
         this.subTitulo = subTitulo;
         this.imgUrl = imgUrl;
         this.dataPostagem = dataPostagem;
         this.conteudo = conteudo;
+        this.categorias = categorias;
     }
 
-    public Texto(TextoCadastrarDTO dto, String imgUrl){
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
+    public Texto(TextoCadastrarDTO dto, Set<Categoria> categorias, String imgUrl){
         this.titulo = dto.titulo();
         this.subTitulo = dto.subtitulo();
         this.imgUrl = imgUrl;
         this.dataPostagem = dto.dataPostagem();
         this.conteudo = dto.conteudo();
+        this.categorias = categorias;
     }
 
     public Long getIdTexto() {

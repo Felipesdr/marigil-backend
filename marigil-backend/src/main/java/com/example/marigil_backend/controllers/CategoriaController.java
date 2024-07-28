@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("api/categorias")
+@RequestMapping("api/idsCategoria")
 public class CategoriaController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class CategoriaController {
         Categoria novaCategoria = service.cadastrarCategoria(dto);
         Long idNovaCategoria = novaCategoria.getIdCategoria();
 
-        URI uri = uriBuilder.path("api/categorias/adicionar/{id}").buildAndExpand(idNovaCategoria).toUri();
+        URI uri = uriBuilder.path("api/idsCategoria/adicionar/{id}").buildAndExpand(idNovaCategoria).toUri();
 
         return ResponseEntity.created(uri).body(new CategoriaDetalhadoDTO(novaCategoria.getIdCategoria(), novaCategoria.getNome()));
     }
