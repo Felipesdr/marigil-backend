@@ -13,6 +13,6 @@ public class CategoriaService {
     private CategoriaRepository repository;
 
     public Categoria cadastrarCategoria(CategoriaCadastrarDTO dto){
-        return new Categoria();
+        return  repository.save(new Categoria(dto));
     }
 }

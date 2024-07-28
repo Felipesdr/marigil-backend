@@ -25,6 +25,7 @@ public class Categoria {
         this.active = active;
     }
 
+
     public Categoria(CategoriaCadastrarDTO categoriaCadastrarDTO){
         this.nome = categoriaCadastrarDTO.nome();
         this.active = true;
