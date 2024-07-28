@@ -8,6 +8,9 @@ import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,12 @@ public class TextoService {
 
     @Autowired
     private TextoRepository repository;
+
+    public List<TextoMostrarParcialDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+        Page<Texto> paginaDeTextos = repository.findAll(pageable);
+        return paginaDeTextos.stream().map(TextoMostrarParcialDTO::new).toList();
+    }
 
     public List<TextoMostrarParcialDTO> pegarSeisPrimeirosTextos(){
         List<Texto> seisPrimeirosTextos = repository.pegarSeisPrimeirosTextos();

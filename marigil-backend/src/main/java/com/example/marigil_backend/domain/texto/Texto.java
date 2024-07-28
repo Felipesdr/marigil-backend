@@ -1,12 +1,11 @@
 package com.example.marigil_backend.domain.texto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.marigil_backend.domain.categoria.Categoria;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Entity
 public class Texto {
@@ -19,6 +18,13 @@ public class Texto {
     private String imgUrl;
     private LocalDate dataPostagem;
     private String conteudo;
+    @ManyToMany
+    @JoinTable(
+            name = "texto_categoria",
+            joinColumns = @JoinColumn(name = "id_texto"),
+            inverseJoinColumns =  @JoinColumn(name = "id_categoria")
+    )
+    private Set<Categoria> categorias;
 
     public Texto() {
     }
@@ -88,5 +94,13 @@ public class Texto {
 
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
+    }
+
+    public Set<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void adicionarCategoria(Categoria categoria){
+        categorias.add(categoria);
     }
 }

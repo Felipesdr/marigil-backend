@@ -24,6 +24,11 @@ public class TextoController {
     @Autowired
     TextoService service;
 
+    @GetMapping
+    public ResponseEntity<List<TextoMostrarParcialDTO>> pegarTodosOsTextos(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "5") Integer tamanho){
+        return ResponseEntity.ok(service.pegarTodosOsTextos(pagina, tamanho));
+    }
+
     @GetMapping("paginaInicial")
     public ResponseEntity<List<TextoMostrarParcialDTO>> pegarSeisPrimeirosTextos(){
         return ResponseEntity.ok(service.pegarSeisPrimeirosTextos());
