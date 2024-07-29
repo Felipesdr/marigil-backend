@@ -2,6 +2,7 @@ package com.example.marigil_backend.domain.texto;
 
 import com.example.marigil_backend.domain.categoria.Categoria;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,7 @@ public class Texto {
     private String subTitulo;
     private String imgUrl;
     private LocalDate dataPostagem;
+    @Size(max = 2200, message = "Esse campo não pode ter mais de 1500 caracteres?")
     private String conteudo;
     @ManyToMany
     @JoinTable(
@@ -26,6 +28,7 @@ public class Texto {
             inverseJoinColumns =  @JoinColumn(name = "id_categoria")
     )
     private Set<Categoria> categorias;
+    private boolean ativo;
 
     public Texto() {
     }
@@ -38,6 +41,7 @@ public class Texto {
         this.dataPostagem = dataPostagem;
         this.conteudo = conteudo;
         this.categorias = categorias;
+        this.ativo = true;
     }
 
     public Texto(TextoCadastrarDTO dto, Set<Categoria> categorias, String imgUrl){
@@ -47,6 +51,7 @@ public class Texto {
         this.dataPostagem = dto.dataPostagem();
         this.conteudo = dto.conteudo();
         this.categorias = categorias;
+        this.ativo = true;
     }
 
     public Long getIdTexto() {
@@ -103,6 +108,14 @@ public class Texto {
 
     public void adicionarCategoria(Categoria categoria){
         categorias.add(categoria);
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void desativarTexto(){
+        this.ativo = false;
     }
 
     @Override
