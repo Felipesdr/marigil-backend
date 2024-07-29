@@ -31,5 +31,4 @@ public class CategoriaController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new CategoriaDetalhadoDTO(novaCategoria.getIdCategoria(), novaCategoria.getNome()));
     }
-
 }

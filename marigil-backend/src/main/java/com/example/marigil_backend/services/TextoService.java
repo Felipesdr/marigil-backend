@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.example.marigil_backend.domain.categoria.Categoria;
 import com.example.marigil_backend.domain.texto.Texto;
 import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
+import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
 import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
 import com.example.marigil_backend.repositorys.CategoriaRepository;
 import com.example.marigil_backend.repositorys.TextoRepository;
@@ -36,10 +37,15 @@ public class TextoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    public List<TextoMostrarParcialDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){
+    public List<TextoDetalhadoDTO> filtrarTextosPorCategoria(List<Long> idsCategoria){
+        System.out.println(idsCategoria);
+        return textoRepository.filtrarTextosPorCategoria(idsCategoria).stream().map(TextoDetalhadoDTO::new).toList();
+    }
+
+    public List<TextoDetalhadoDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){
         Pageable pageable = PageRequest.of(pagina, tamanho);
         Page<Texto> paginaDeTextos = textoRepository.findAll(pageable);
-        return paginaDeTextos.stream().map(TextoMostrarParcialDTO::new).toList();
+        return paginaDeTextos.stream().map(TextoDetalhadoDTO::new).toList();
     }
 
     public List<TextoMostrarParcialDTO> pegarSeisPrimeirosTextos(){
