@@ -2,10 +2,7 @@ package com.example.marigil_backend.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.marigil_backend.domain.categoria.Categoria;
-import com.example.marigil_backend.domain.texto.Texto;
-import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
-import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
-import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
+import com.example.marigil_backend.domain.texto.*;
 import com.example.marigil_backend.repositorys.CategoriaRepository;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +35,10 @@ public class TextoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    public TextoDetalhadoDTO buscarTextoPorId(Long idTexto){
+        return new TextoDetalhadoDTO(textoRepository.findById(idTexto).get());
+    }
 
     public List<TextoDetalhadoDTO> filtrarTextosPorCategoria(List<Long> idsCategoria, Integer pagina, Integer tamanho){
         Pageable pageable = PageRequest.of(pagina, tamanho);
@@ -96,5 +99,30 @@ public class TextoService {
                 .stream()
                 .map(idCategoria-> categoriaRepository.findById(idCategoria).orElse(null))
                 .collect(Collectors.toSet());
+    }
+
+    public Texto atualizarTexto(TextoAtualizarDTO dto){
+
+        Texto textoAtualizado = textoRepository.getReferenceById(dto.idTexto());
+
+        if(dto.titulo() != null){
+            textoAtualizado.setTitulo(dto.titulo());
+        }
+
+        if(dto.subtitulo() != null){
+            textoAtualizado.setSubTitulo(dto.subtitulo());
+        }
+
+        if(dto.imagem() != null){
+            textoAtualizado.setImgUrl(uploadImage(dto.imagem()));
+        }
+
+        if(dto.conteudo() != null){
+            textoAtualizado.setConteudo(dto.conteudo());
+        }
+
+        textoAtualizado.setDataPostagem(LocalDate.now());
+
+        return textoAtualizado;
     }
 }

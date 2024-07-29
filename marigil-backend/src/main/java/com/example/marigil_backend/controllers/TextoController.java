@@ -1,9 +1,6 @@
 package com.example.marigil_backend.controllers;
 
-import com.example.marigil_backend.domain.texto.Texto;
-import com.example.marigil_backend.domain.texto.TextoCadastrarDTO;
-import com.example.marigil_backend.domain.texto.TextoDetalhadoDTO;
-import com.example.marigil_backend.domain.texto.TextoMostrarParcialDTO;
+import com.example.marigil_backend.domain.texto.*;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import com.example.marigil_backend.services.TextoService;
 import jakarta.transaction.Transactional;
@@ -25,6 +22,11 @@ public class TextoController {
 
     @Autowired
     TextoService service;
+
+    @GetMapping("/{idTexto}")
+    public ResponseEntity<TextoDetalhadoDTO> buscarPorId(@PathVariable Long idTexto){
+        return ResponseEntity.ok(service.buscarTextoPorId(idTexto));
+    }
     @GetMapping("/filtrar")
     public ResponseEntity<List<TextoDetalhadoDTO>> filtrarTextosPorCategoria(@RequestParam List<Long> idsCategoria,
                                                                              @RequestParam Integer pagina,
@@ -36,12 +38,12 @@ public class TextoController {
         return ResponseEntity.ok(service.pegarTodosOsTextos(pagina, tamanho));
     }
 
-    @GetMapping("paginaInicial")
+    @GetMapping("/paginaInicial")
     public ResponseEntity<List<TextoMostrarParcialDTO>> pegarSeisPrimeirosTextos(){
         return ResponseEntity.ok(service.pegarSeisPrimeirosTextos());
     }
 
-    @PostMapping(path = "adicionar", consumes = "multipart/form-data")
+    @PostMapping(path = "/adicionar", consumes = "multipart/form-data")
     @Transactional
     public ResponseEntity<TextoDetalhadoDTO> adiconarTexto (@RequestParam("titulo") String titulo,
                                                             @RequestParam("subtitulo") String subtitulo,
@@ -57,5 +59,18 @@ public class TextoController {
        URI uri = uriBuilder.path("/api/textos/adicionar/{id}").buildAndExpand(idNovoTexto).toUri();
 
        return ResponseEntity.created(uri).body(new TextoDetalhadoDTO(novoTexto));
+    }
+
+    @PutMapping("/atualizar/{idTexto}")
+    @Transactional
+    public ResponseEntity<TextoDetalhadoDTO> atualizarTexto(@PathVariable Long idTexto,
+                                                            @RequestParam("titulo") String titulo,
+                                                            @RequestParam("subtitulo") String subtitulo,
+                                                            @RequestParam("conteudo") String conteudo,
+                                                            @RequestParam("file") MultipartFile imagem,
+                                                            @RequestParam("idsCategoria[]") List<Long> idsCategoria) {
+
+        TextoAtualizarDTO dto = new TextoAtualizarDTO(idTexto, titulo, subtitulo, imagem, conteudo, idsCategoria);
+        return ResponseEntity.ok(new TextoDetalhadoDTO(service.atualizarTexto(dto)));
     }
 }
