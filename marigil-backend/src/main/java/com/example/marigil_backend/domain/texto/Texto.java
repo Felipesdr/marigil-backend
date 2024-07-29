@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -102,5 +103,17 @@ public class Texto {
 
     public void adicionarCategoria(Categoria categoria){
         categorias.add(categoria);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Texto texto)) return false;
+        return Objects.equals(getIdTexto(), texto.getIdTexto());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIdTexto());
     }
 }

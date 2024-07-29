@@ -37,9 +37,10 @@ public class TextoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    public List<TextoDetalhadoDTO> filtrarTextosPorCategoria(List<Long> idsCategoria){
-        System.out.println(idsCategoria);
-        return textoRepository.filtrarTextosPorCategoria(idsCategoria).stream().map(TextoDetalhadoDTO::new).toList();
+    public List<TextoDetalhadoDTO> filtrarTextosPorCategoria(List<Long> idsCategoria, Integer pagina, Integer tamanho){
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+        Page<Texto> paginaDeTextos = textoRepository.filtrarTextosPorCategoria(idsCategoria, pageable);
+        return paginaDeTextos.stream().map(TextoDetalhadoDTO::new).toList();
     }
 
     public List<TextoDetalhadoDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){

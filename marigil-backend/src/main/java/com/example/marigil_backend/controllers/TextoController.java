@@ -26,8 +26,10 @@ public class TextoController {
     @Autowired
     TextoService service;
     @GetMapping("/filtrar")
-    public ResponseEntity<List<TextoDetalhadoDTO>> filtrarTextosPorCategoria(@RequestParam List<Long> idsCategoria){
-        return ResponseEntity.ok(service.filtrarTextosPorCategoria(idsCategoria));
+    public ResponseEntity<List<TextoDetalhadoDTO>> filtrarTextosPorCategoria(@RequestParam List<Long> idsCategoria,
+                                                                             @RequestParam Integer pagina,
+                                                                             @RequestParam Integer tamanho){
+        return ResponseEntity.ok(service.filtrarTextosPorCategoria(idsCategoria, pagina, tamanho));
     }
     @GetMapping
     public ResponseEntity<List<TextoDetalhadoDTO>> pegarTodosOsTextos(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "5") Integer tamanho){
