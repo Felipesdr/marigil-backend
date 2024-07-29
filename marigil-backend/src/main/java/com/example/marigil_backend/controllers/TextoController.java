@@ -4,6 +4,8 @@ import com.example.marigil_backend.domain.texto.*;
 import com.example.marigil_backend.repositorys.TextoRepository;
 import com.example.marigil_backend.services.TextoService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +74,12 @@ public class TextoController {
 
         TextoAtualizarDTO dto = new TextoAtualizarDTO(idTexto, titulo, subtitulo, imagem, conteudo, idsCategoria);
         return ResponseEntity.ok(new TextoDetalhadoDTO(service.atualizarTexto(dto)));
+    }
+
+    @DeleteMapping("desativar/{idTexto}")
+    @Transactional
+    public ResponseEntity desativarTexto(@PathVariable Long idTexto) {
+        service.desativarTexto(idTexto);
+        return ResponseEntity.noContent().build();
     }
 }

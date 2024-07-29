@@ -43,18 +43,18 @@ public class TextoService {
     public List<TextoDetalhadoDTO> filtrarTextosPorCategoria(List<Long> idsCategoria, Integer pagina, Integer tamanho){
         Pageable pageable = PageRequest.of(pagina, tamanho);
         Page<Texto> paginaDeTextos = textoRepository.filtrarTextosPorCategoria(idsCategoria, pageable);
-        return paginaDeTextos.stream().map(TextoDetalhadoDTO::new).toList();
+        return paginaDeTextos.stream().filter(Texto::isAtivo).map(TextoDetalhadoDTO::new).toList();
     }
 
     public List<TextoDetalhadoDTO> pegarTodosOsTextos(Integer pagina, Integer tamanho){
         Pageable pageable = PageRequest.of(pagina, tamanho);
         Page<Texto> paginaDeTextos = textoRepository.findAll(pageable);
-        return paginaDeTextos.stream().map(TextoDetalhadoDTO::new).toList();
+        return paginaDeTextos.stream().filter(Texto::isAtivo).map(TextoDetalhadoDTO::new).toList();
     }
 
     public List<TextoMostrarParcialDTO> pegarSeisPrimeirosTextos(){
         List<Texto> seisPrimeirosTextos = textoRepository.pegarSeisPrimeirosTextos();
-        return seisPrimeirosTextos.stream().map(TextoMostrarParcialDTO::new).toList();
+        return seisPrimeirosTextos.stream().filter(Texto::isAtivo).map(TextoMostrarParcialDTO::new).toList();
 
     }
 
@@ -124,5 +124,9 @@ public class TextoService {
         textoAtualizado.setDataPostagem(LocalDate.now());
 
         return textoAtualizado;
+    }
+
+    public void desativarTexto(Long idTexto){
+        textoRepository.getReferenceById(idTexto).desativarTexto();
     }
 }
