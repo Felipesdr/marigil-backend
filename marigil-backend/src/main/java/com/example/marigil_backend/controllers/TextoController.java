@@ -64,11 +64,11 @@ public class TextoController {
     @PutMapping("/atualizar/{idTexto}")
     @Transactional
     public ResponseEntity<TextoDetalhadoDTO> atualizarTexto(@PathVariable Long idTexto,
-                                                            @RequestParam("titulo") String titulo,
-                                                            @RequestParam("subtitulo") String subtitulo,
-                                                            @RequestParam("conteudo") String conteudo,
-                                                            @RequestParam("file") MultipartFile imagem,
-                                                            @RequestParam("idsCategoria[]") List<Long> idsCategoria) {
+                                                            @RequestParam(name = "titulo", required = false) String titulo,
+                                                            @RequestParam(name = "subtitulo", required = false) String subtitulo,
+                                                            @RequestParam(name = "conteudo", required = false) String conteudo,
+                                                            @RequestParam(name = "file", required = false) MultipartFile imagem,
+                                                            @RequestParam(name = "idsCategoria[]", required = false) List<Long> idsCategoria) {
 
         TextoAtualizarDTO dto = new TextoAtualizarDTO(idTexto, titulo, subtitulo, imagem, conteudo, idsCategoria);
         return ResponseEntity.ok(new TextoDetalhadoDTO(service.atualizarTexto(dto)));
